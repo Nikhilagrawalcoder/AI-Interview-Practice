@@ -2,6 +2,7 @@
   "name": "ai-interview-chatbot",
   "version": "0.1.0",
   "private": true,
+  
   "dependencies": {
     "lucide-react": "^0.263.1",
     "pdfjs-dist": "^2.16.105",
@@ -32,4 +33,5 @@
       "last 1 safari version"
     ]
   }
+
 }

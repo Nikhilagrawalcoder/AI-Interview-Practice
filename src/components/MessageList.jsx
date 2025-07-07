@@ -2,6 +2,16 @@ import React, { useEffect, useRef } from 'react';
 import { MESSAGE_TYPES } from '../utils/constants';
 import { User, Bot, ThumbsUp, HelpCircle, MessageSquare } from 'lucide-react';
 
+function renderWithBold(text) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} className="font-bold">{part.slice(2, -2)}</strong>;
+    }
+    return <span key={i}>{part}</span>;
+  });
+}
+
 const MessageList = ({ messages, isLoading }) => {
   const messagesEndRef = useRef(null);
 
@@ -71,15 +81,16 @@ const MessageList = ({ messages, isLoading }) => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6 h-96 overflow-y-auto">
-      <div className="space-y-4">
+    <div className="bg-white rounded-xl shadow-lg p-6 min-h-[100px] max-h-[300px] overflow-y-auto">
+      <div className="space-y-3">
         {messages.length === 0 ? (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-gray-500 py-6">
             <p>No messages yet. Start a conversation!</p>
           </div>
         ) : (
           messages.map((message, index) => {
             const isUser = message.type === MESSAGE_TYPES.USER || message.type === MESSAGE_TYPES.ANSWER;
+            const isAI = message.type === MESSAGE_TYPES.AI;
             return (
               <div
                 key={message.id || index}
@@ -87,31 +98,28 @@ const MessageList = ({ messages, isLoading }) => {
               >
                 {!isUser && getAvatar(message.type)}
                 <div
-                  className={`relative max-w-xs lg:max-w-md px-4 py-2 rounded-2xl shadow-sm ${getMessageStyle(message.type)} mx-2`}
-                >
-                  {getMessageLabel(message.type) && (
-                    <p className="text-xs font-semibold mb-1 opacity-80">
-                      {getMessageLabel(message.type)}
-                    </p>
-                  )}
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                  <p className="text-xs opacity-60 mt-1 text-right">{message.timestamp}</p>
-                  {/* Speech bubble tail */}
-                  <span
-                    className={`absolute bottom-0 ${
-                      isUser
-                        ? 'right-0 translate-x-1/2 border-l-[12px] border-l-indigo-600 border-b-[12px] border-b-transparent'
-                        : 'left-0 -translate-x-1/2 border-r-[12px] border-r-gray-100 border-b-[12px] border-b-transparent'
+                  className={`relative max-w-xs lg:max-w-md px-4 py-2 rounded-2xl shadow-sm mx-2
+                    ${isAI
+                      ? 'bg-gradient-to-r from-indigo-100 to-indigo-200 border border-indigo-300 text-indigo-900 font-semibold'
+                      : getMessageStyle(message.type)
                     }`}
-                    style={{ borderWidth: 0 }}
-                  ></span>
+                >
+                {getMessageLabel(message.type) && (
+                    <p className="text-xs font-semibold mb-1 opacity-80">
+                    {getMessageLabel(message.type)}
+                  </p>
+                )}
+                  <p className="text-sm whitespace-pre-wrap">
+                    {isAI ? renderWithBold(message.content) : message.content}
+                  </p>
+                  <p className="text-xs opacity-60 mt-1 text-right">{message.timestamp}</p>
                 </div>
                 {isUser && getAvatar(message.type)}
               </div>
             );
           })
         )}
-
+        
         {isLoading && (
           <div className="flex justify-start">
             <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg">

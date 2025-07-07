@@ -61,13 +61,10 @@ export const playAudio = (audioUrl) => {
   return audio; // Return audio element for control
 };
 
-// AssemblyAI transcription process
-export const transcribeAudio = async (audioBlob) => {
-  // Fixed: Correct environment variable name
-  const apiKey = import.meta.env.VITE_ASSEMBLYAI_API_KEY;
-
+// AssemblyAI transcription process - now accepts API key as parameter
+export const transcribeAudio = async (audioBlob, apiKey) => {
   if (!apiKey) {
-    throw new Error('AssemblyAI API key not found. Please set VITE_ASSEMBLYAI_API_KEY in your environment variables.');
+    throw new Error('AssemblyAI API key is required. Please enter your API key in the settings.');
   }
 
   try {
@@ -75,7 +72,7 @@ export const transcribeAudio = async (audioBlob) => {
     const uploadRes = await fetch('https://api.assemblyai.com/v2/upload', {
       method: 'POST',
       headers: {
-        authorization: apiKey, // Fixed: Should be just the API key
+        authorization: apiKey,
       },
       body: audioBlob,
     });

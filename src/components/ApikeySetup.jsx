@@ -25,8 +25,13 @@ const ApiKeySetup = ({ onConnect }) => {
       <div className="backdrop-blur-md bg-white/80 border border-indigo-100 rounded-2xl shadow-2xl p-8 w-full max-w-md transition-all">
         <div className="text-center mb-6">
           <Settings className="mx-auto h-16 w-16 text-indigo-500 mb-4 drop-shadow" />
-          <h1 className="text-3xl font-extrabold text-indigo-700 mb-2 tracking-tight">AI Interview Assistant</h1>
-          <p className="text-indigo-600 font-medium">Connect with your Gemini API key to get started</p>
+          <h1 className="text-3xl font-extrabold text-indigo-700 mb-1 tracking-tight">
+            JobPrepAI
+          </h1>
+          <p className="text-lg text-indigo-600 font-medium mb-2">
+            An AI Interview Assistant
+          </p>
+          <p className="text-indigo-500">Connect with your Gemini API key to get started</p>
         </div>
         
         <div className="space-y-5">

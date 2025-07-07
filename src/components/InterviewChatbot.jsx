@@ -8,7 +8,7 @@ import { testConnection, generateResponse } from '../services/geminiApi';
 import { INTERVIEW_QUESTIONS, SYSTEM_PROMPTS, MESSAGE_TYPES } from '../utils/constants';
 import { createMessage } from '../utils/helpers';
 import FileUpload from './FileUpload';
-import { GeminiService } from '../services/geminiApi'; // Add this import
+import { GeminiService } from '../services/geminiApi';
 
 const InterviewChatbot = () => {
   const [isConnected, setIsConnected] = useState(false);
@@ -20,8 +20,71 @@ const InterviewChatbot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [hasCustomQuestions, setHasCustomQuestions] = useState(false);
-  const [jobDescription, setJobDescription] = useState(''); // Add this state
-  const [geminiService, setGeminiService] = useState(null); // Add this state
+  const [jobDescription, setJobDescription] = useState('');
+  const [geminiService, setGeminiService] = useState(null);
+  
+  // AssemblyAI API key state
+  const [assemblyApiKey, setAssemblyApiKey] = useState('');
+  const [showAssemblyKeyInput, setShowAssemblyKeyInput] = useState(false);
+
+  // Gemini API key state
+  const [showGeminiKeyInput, setShowGeminiKeyInput] = useState(false);
+
+  // Load AssemblyAI API key from localStorage on mount
+  useEffect(() => {
+    const savedKey = localStorage.getItem('assemblyApiKey');
+    const savedTimestamp = localStorage.getItem('assemblyApiKeyTimestamp');
+    if (savedKey && savedTimestamp) {
+      const now = Date.now();
+      const age = now - parseInt(savedTimestamp, 10);
+      if (age < 20*60*1000) { // 20 minutes in ms
+        setAssemblyApiKey(savedKey);
+      } else {
+        // Expired
+        localStorage.removeItem('assemblyApiKey');
+        localStorage.removeItem('assemblyApiKeyTimestamp');
+        setAssemblyApiKey('');
+        setShowAssemblyKeyInput(true);
+      }
+    }
+  }, []);
+
+  // Save AssemblyAI API key to localStorage when it changes
+  useEffect(() => {
+    if (assemblyApiKey) {
+      localStorage.setItem('assemblyApiKey', assemblyApiKey);
+      localStorage.setItem('assemblyApiKeyTimestamp', Date.now().toString());
+    }
+  }, [assemblyApiKey]);
+
+  // Load Gemini API key from localStorage on mount
+  useEffect(() => {
+    const savedKey = localStorage.getItem('geminiApiKey');
+    const savedTimestamp = localStorage.getItem('geminiApiKeyTimestamp');
+    if (savedKey && savedTimestamp) {
+      const now = Date.now();
+      const age = now - parseInt(savedTimestamp, 10);
+      if (age < 20 * 60 * 1000) { // 20 minutes in ms
+        setApiKey(savedKey);
+      } else {
+        // Expired
+        localStorage.removeItem('geminiApiKey');
+        localStorage.removeItem('geminiApiKeyTimestamp');
+        setApiKey('');
+        setShowGeminiKeyInput(true);
+      }
+    } else {
+      setShowGeminiKeyInput(true);
+    }
+  }, []);
+
+  // Save Gemini API key to localStorage when it changes
+  useEffect(() => {
+    if (apiKey) {
+      localStorage.setItem('geminiApiKey', apiKey);
+      localStorage.setItem('geminiApiKeyTimestamp', Date.now().toString());
+    }
+  }, [apiKey]);
 
   // Initialize interview questions
   useEffect(() => {
@@ -42,7 +105,7 @@ const InterviewChatbot = () => {
       if (isValid) {
         setApiKey(apiKey);
         setIsConnected(true);
-        setGeminiService(new GeminiService(apiKey)); // Initialize Gemini service
+        setGeminiService(new GeminiService(apiKey));
         const welcomeMessage = createMessage(
           MESSAGE_TYPES.AI,
           'Connected successfully! I\'m your AI interview assistant. I can help you practice interviews or answer questions in an interview-style format. Choose a mode above to get started.'
@@ -145,7 +208,7 @@ const InterviewChatbot = () => {
     setMessages([]);
     setHasCustomQuestions(false);
     setInterviewQuestions([]);
-    setJobDescription(''); // Reset job description
+    setJobDescription('');
 
     const resetMessage = createMessage(
       MESSAGE_TYPES.AI,
@@ -198,13 +261,13 @@ const InterviewChatbot = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100/80 via-indigo-100/80 to-indigo-200/80 flex flex-col items-center py-8 px-0">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100/80 via-indigo-100/80 to-indigo-200/80 flex flex-col items-center py-2 px-2">
       {/* Header */}
-      <div className="w-full mb-8 px-0">
+      <div className="w-full mb-4 px-0 ">
         <div className="backdrop-blur-md bg-white/80 border border-indigo-100 rounded-2xl shadow-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-4 transition-all w-full">
           <div>
-            <h1 className="text-3xl font-extrabold text-indigo-700 mb-2 tracking-tight">AI Interview Assistant</h1>
-            <p className="text-indigo-600 font-medium">Practice interviews or ask questions in a professional, interview-style format.</p>
+            <h1 className="text-3xl font-extrabold text-indigo-700 mb-2 tracking-tight">JobPrepAI</h1>
+            <p className="text-indigo-600 font-medium">AI Interview Assistant - Practice interviews or ask questions in a professional, interview-style format.</p>
           </div>
           <div className="flex items-center space-x-2">
             <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
@@ -269,6 +332,10 @@ const InterviewChatbot = () => {
                   onReset={resetInterview}
                   isLoading={isLoading}
                   isCustomQuestions={hasCustomQuestions}
+                  assemblyApiKey={assemblyApiKey}
+                  setAssemblyApiKey={setAssemblyApiKey}
+                  showAssemblyKeyInput={showAssemblyKeyInput}
+                  setShowAssemblyKeyInput={setShowAssemblyKeyInput}
                 />
               ) : (
                 <div className="text-center py-8">

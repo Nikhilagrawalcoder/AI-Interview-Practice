@@ -3,51 +3,51 @@ import { INTERVIEW_QUESTIONS, SYSTEM_PROMPTS } from '../utils/constants';
 const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 export const testConnection = async (apiKey) => {
-  try {
+    try {
     const response = await fetch(`${BASE_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: "Hello, this is a test message."
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: "Hello, this is a test message."
+            }]
           }]
-        }]
-      })
-    });
-    return response.ok;
-  } catch (error) {
-    console.error('Connection test failed:', error);
-    return false;
-  }
+        })
+      });
+      return response.ok;
+    } catch (error) {
+      console.error('Connection test failed:', error);
+      return false;
+    }
 };
 
 export const generateResponse = async (apiKey, prompt, systemPrompt = '') => {
-  try {
-    const fullPrompt = systemPrompt ? `${systemPrompt}\n\nUser: ${prompt}` : prompt;
-
+    try {
+      const fullPrompt = systemPrompt ? `${systemPrompt}\n\nUser: ${prompt}` : prompt;
+      
     const response = await fetch(`${BASE_URL}?key=${apiKey}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        contents: [{
-          parts: [{
-            text: fullPrompt
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [{
+            parts: [{
+              text: fullPrompt
+            }]
           }]
-        }]
-      })
-    });
-
-    const data = await response.json();
+        })
+      });
+      
+      const data = await response.json();
     return data.candidates?.[0]?.content?.parts?.[0]?.text || "No response from Gemini API.";
-  } catch (error) {
-    console.error('Error generating response:', error);
-    return "I apologize, but I'm having trouble generating a response right now. Please try again.";
-  }
+    } catch (error) {
+      console.error('Error generating response:', error);
+      return "I apologize, but I'm having trouble generating a response right now. Please try again.";
+    }
 };
 
 export class GeminiService {

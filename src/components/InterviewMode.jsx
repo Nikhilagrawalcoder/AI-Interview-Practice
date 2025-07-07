@@ -1,5 +1,5 @@
-import React from 'react';
-import { RotateCcw, FileText } from 'lucide-react';
+import React, { useState } from 'react';
+import { RotateCcw, FileText, Settings, Eye, EyeOff } from 'lucide-react';
 import VoiceRecorder from './VoiceRecorder';
 
 const InterviewMode = ({
@@ -9,8 +9,30 @@ const InterviewMode = ({
   onSubmitAnswer,
   onReset,
   isLoading,
-  isCustomQuestions = false
+  isCustomQuestions = false,
+  assemblyApiKey,
+  showAssemblyKeyInput,
+  setAssemblyApiKey,
+  setShowAssemblyKeyInput
 }) => {
+  const [showApiKey, setShowApiKey] = useState(false);
+  const [tempApiKey, setTempApiKey] = useState(assemblyApiKey);
+
+  const handleApiKeySubmit = () => {
+    setAssemblyApiKey(tempApiKey);
+    setShowAssemblyKeyInput(false);
+  };
+
+  const handleApiKeyCancel = () => {
+    setTempApiKey(assemblyApiKey);
+    setShowAssemblyKeyInput(false);
+  };
+
+  const handleShowAssemblyKeyInput = () => {
+    setShowAssemblyKeyInput(true);
+    setTempApiKey(assemblyApiKey);
+  };
+
   return (
     <div className="space-y-6">
       {/* Question Display */}
@@ -46,10 +68,56 @@ const InterviewMode = ({
         </div>
       </div>
 
+      {/* AssemblyAI API Key Input */}
+      {showAssemblyKeyInput && (
+        <div className="bg-white border border-gray-200 p-4 rounded-lg shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <label className="block text-sm font-medium text-gray-700">
+              AssemblyAI API Key
+            </label>
+            <button
+              onClick={() => setShowApiKey(!showApiKey)}
+              className="text-gray-500 hover:text-gray-700"
+            >
+              {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
+          <input
+            type={showApiKey ? "text" : "password"}
+            value={tempApiKey}
+            onChange={(e) => setTempApiKey(e.target.value)}
+            placeholder="Enter your AssemblyAI API key"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 mb-3"
+          />
+          <div className="flex justify-end space-x-2">
+            <button
+              onClick={handleApiKeyCancel}
+              className="px-3 py-1 text-sm text-gray-600 hover:text-gray-800"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleApiKeySubmit}
+              className="px-3 py-1 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
+            >
+              Save
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">
+            Your API key is stored locally and used only for transcription. Get your key at{' '}
+            <a href="https://www.assemblyai.com/" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:text-indigo-800">
+              AssemblyAI
+            </a>
+          </p>
+        </div>
+      )}
+
       {/* Voice Recorder */}
       <VoiceRecorder 
         onSubmitAnswer={onSubmitAnswer}
         isLoading={isLoading}
+        assemblyApiKey={assemblyApiKey}
+        onShowAssemblyKeyInput={handleShowAssemblyKeyInput}
       />
 
       {/* Instructions */}
@@ -64,8 +132,30 @@ const InterviewMode = ({
             <li>• These questions are tailored to the job description you uploaded</li>
           )}
           <li>• Review the AI feedback to improve your answers</li>
+          <li>• {assemblyApiKey ? '✓ AssemblyAI configured for transcription' : '⚠ Set AssemblyAI API key for automatic transcription'}</li>
         </ul>
       </div>
+
+      {/* API Key Status */}
+      {!assemblyApiKey && (
+        <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-blue-800 font-medium">Setup AssemblyAI for Transcription</p>
+              <p className="text-blue-600 text-sm">
+                Add your AssemblyAI API key to enable automatic speech-to-text transcription
+              </p>
+            </div>
+            <button
+              onClick={handleShowAssemblyKeyInput}
+              className="flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              <Settings className="h-4 w-4 mr-1" />
+              Setup
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

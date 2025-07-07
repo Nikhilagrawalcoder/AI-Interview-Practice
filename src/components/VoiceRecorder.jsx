@@ -1,11 +1,16 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Mic, MicOff, Play, Pause, Trash2 } from 'lucide-react';
+import { Mic, MicOff, Play, Pause, Trash2, Settings } from 'lucide-react';
 import { startRecording, stopRecording, transcribeAudio, cleanup } from '../services/audioService';
 
-const VoiceRecorder = ({ onSubmitAnswer, isLoading }) => {
+const VoiceRecorder = ({ 
+  onSubmitAnswer, 
+  isLoading, 
+  assemblyApiKey, 
+  onShowAssemblyKeyInput 
+}) => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordedAudio, setRecordedAudio] = useState(null);
-  const [audioBlob, setAudioBlob] = useState(null); // Store the blob separately
+  const [audioBlob, setAudioBlob] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [transcription, setTranscription] = useState('');
   const [isTranscribing, setIsTranscribing] = useState(false);
@@ -22,7 +27,7 @@ const VoiceRecorder = ({ onSubmitAnswer, isLoading }) => {
 
   const handleStartRecording = async () => {
     try {
-      setError(''); // Clear any previous errors
+      setError('');
       const success = await startRecording();
       if (success) {
         setIsRecording(true);
@@ -48,17 +53,21 @@ const VoiceRecorder = ({ onSubmitAnswer, isLoading }) => {
         setAudioBlob(audioBlob);
         setIsRecording(false);
         
-        // Auto-transcribe
-        setIsTranscribing(true);
-        try {
-          const transcriptionText = await transcribeAudio(audioBlob);
-          setTranscription(transcriptionText);
-        } catch (transcriptionError) {
-          console.error('Transcription error:', transcriptionError);
-          setError('Error transcribing audio. Please try again or type your answer manually.');
-          setTranscription(''); // Clear transcription on error
+        // Auto-transcribe if API key is available
+        if (assemblyApiKey) {
+          setIsTranscribing(true);
+          try {
+            const transcriptionText = await transcribeAudio(audioBlob, assemblyApiKey);
+            setTranscription(transcriptionText);
+          } catch (transcriptionError) {
+            console.error('Transcription error:', transcriptionError);
+            setError('Error transcribing audio. Please check your API key or try again.');
+            setTranscription('');
+          }
+          setIsTranscribing(false);
+        } else {
+          setError('AssemblyAI API key not found. Please set your API key to enable transcription.');
         }
-        setIsTranscribing(false);
       } else {
         setError('Failed to stop recording. Please try again.');
       }
@@ -107,17 +116,19 @@ const VoiceRecorder = ({ onSubmitAnswer, isLoading }) => {
   };
 
   const retryTranscription = async () => {
-    if (audioBlob) {
+    if (audioBlob && assemblyApiKey) {
       setIsTranscribing(true);
       setError('');
       try {
-        const transcriptionText = await transcribeAudio(audioBlob);
+        const transcriptionText = await transcribeAudio(audioBlob, assemblyApiKey);
         setTranscription(transcriptionText);
       } catch (transcriptionError) {
         console.error('Transcription retry error:', transcriptionError);
-        setError('Transcription failed again. Please type your answer manually.');
+        setError('Transcription failed again. Please check your API key or type your answer manually.');
       }
       setIsTranscribing(false);
+    } else if (!assemblyApiKey) {
+      setError('AssemblyAI API key is required for transcription. Please set your API key.');
     }
   };
 
@@ -127,15 +138,43 @@ const VoiceRecorder = ({ onSubmitAnswer, isLoading }) => {
       {error && (
         <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
           <p className="text-red-800">{error}</p>
-          {error.includes('transcrib') && audioBlob && (
+          <div className="mt-2 flex gap-2">
+            {error.includes('transcrib') && audioBlob && assemblyApiKey && (
+              <button
+                onClick={retryTranscription}
+                className="text-red-600 hover:text-red-800 underline"
+                disabled={isTranscribing}
+              >
+                {isTranscribing ? 'Retrying...' : 'Retry Transcription'}
+              </button>
+            )}
+            {error.includes('API key') && (
+              <button
+                onClick={onShowAssemblyKeyInput}
+                className="text-red-600 hover:text-red-800 underline"
+              >
+                Set API Key
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* API Key Status */}
+      {!assemblyApiKey && (
+        <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
+          <div className="flex items-center justify-between">
+            <p className="text-yellow-800">
+              AssemblyAI API key not configured. Transcription will not work without it.
+            </p>
             <button
-              onClick={retryTranscription}
-              className="mt-2 text-red-600 hover:text-red-800 underline"
-              disabled={isTranscribing}
+              onClick={onShowAssemblyKeyInput}
+              className="flex items-center text-yellow-600 hover:text-yellow-800 underline"
             >
-              {isTranscribing ? 'Retrying...' : 'Retry Transcription'}
+              <Settings className="h-4 w-4 mr-1" />
+              Set API Key
             </button>
-          )}
+          </div>
         </div>
       )}
 
@@ -248,7 +287,12 @@ const VoiceRecorder = ({ onSubmitAnswer, isLoading }) => {
       {/* Manual Input Option */}
       {recordedAudio && !transcription && !isTranscribing && (
         <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg">
-          <p className="text-yellow-800 mb-2">Having trouble with transcription? You can type your answer manually:</p>
+          <p className="text-yellow-800 mb-2">
+            {!assemblyApiKey 
+              ? 'Transcription requires an AssemblyAI API key. You can type your answer manually:'
+              : 'Having trouble with transcription? You can type your answer manually:'
+            }
+          </p>
           <textarea
             value={transcription}
             onChange={handleTranscriptionEdit}

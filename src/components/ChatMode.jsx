@@ -19,7 +19,7 @@ const ChatMode = ({ onSendMessage, isLoading }) => {
   };
 
   return (
-    <div className="w-full flex items-end space-x-2 bg-white/80 backdrop-blur-md border border-indigo-100 rounded-xl shadow-md p-3">
+    <div className="w-full flex items-end space-x-1 bg-white/80 backdrop-blur-md border border-indigo-100 rounded-xl shadow-md p-1">
       <textarea
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
