@@ -2,6 +2,10 @@
 
 A powerful AI-driven interview practice application that helps you prepare for job interviews with personalized questions and real-time feedback.
 
+## 🚀 Live Demo
+
+**Try PromptMate now**: [https://promptmate.netlify.app/](https://promptmate.netlify.app/)
+
 ## Features
 
 ### 🎯 **Dual Mode Interface**
@@ -44,8 +48,15 @@ Before using PromptMate, you'll need:
    - Required for automatic speech-to-text transcription
    - Without this, you'll need to manually type your answers
 
-## Installation
+## Quick Start
 
+### Option 1: Use the Live Demo
+1. Visit [https://promptmate.netlify.app/](https://promptmate.netlify.app/)
+2. Enter your Gemini API key when prompted
+3. Optionally add your AssemblyAI API key for voice transcription
+4. Start practicing your interviews!
+
+### Option 2: Local Development
 1. Clone the repository:
 ```bash
 git clone https://github.com/Nikhilagrawalcoder/AI-Interview-Practice
@@ -62,12 +73,12 @@ npm install
 npm start
 ```
 
-4. Open your browser and navigate to `http://localhost:5173`
+4. Open your browser and navigate to `http://localhost:3000`
 
 ## Usage
 
 ### Initial Setup
-1. When you first open the application, you'll be prompted to enter your Gemini API key
+1. When you first open the application (either at [promptmate.netlify.app](https://promptmate.netlify.app/) or locally), you'll be prompted to enter your Gemini API key
 2. The app will test the connection and confirm successful setup
 3. You can optionally add your AssemblyAI API key for voice transcription
 
@@ -137,6 +148,7 @@ src/
 - **Audio**: Web Audio API, MediaRecorder API
 - **File Processing**: Built-in file readers
 - **State Management**: React useState and useEffect
+- **Deployment**: Netlify with continuous deployment
 
 ## Features in Detail
 
@@ -240,3 +252,5 @@ For support, please open an issue on GitHub or contact the development team.
 ---
 
 **Made with ❤️ for interview success**
+
+**🌐 Live Demo**: [https://promptmate.netlify.app/](https://promptmate.netlify.app/)
