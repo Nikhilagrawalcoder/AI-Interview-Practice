@@ -26,7 +26,7 @@ const ApiKeySetup = ({ onConnect }) => {
         <div className="text-center mb-6">
           <Settings className="mx-auto h-16 w-16 text-indigo-500 mb-4 drop-shadow" />
           <h1 className="text-3xl font-extrabold text-indigo-700 mb-1 tracking-tight">
-            JobPrepAI
+           PromptMate
           </h1>
           <p className="text-lg text-indigo-600 font-medium mb-2">
             An AI Interview Assistant

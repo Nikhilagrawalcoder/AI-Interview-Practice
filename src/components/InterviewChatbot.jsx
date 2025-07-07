@@ -266,7 +266,7 @@ const InterviewChatbot = () => {
       <div className="w-full mb-4 px-0 ">
         <div className="backdrop-blur-md bg-white/80 border border-indigo-100 rounded-2xl shadow-2xl p-8 flex flex-col md:flex-row items-center justify-between gap-4 transition-all w-full">
           <div>
-            <h1 className="text-3xl font-extrabold text-indigo-700 mb-2 tracking-tight">JobPrepAI</h1>
+            <h1 className="text-3xl font-extrabold text-indigo-700 mb-2 tracking-tight">PromptMate</h1>
             <p className="text-indigo-600 font-medium">AI Interview Assistant - Practice interviews or ask questions in a professional, interview-style format.</p>
           </div>
           <div className="flex items-center space-x-2">
