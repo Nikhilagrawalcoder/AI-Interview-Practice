@@ -1,0 +1,232 @@
+/* === Base Styles === */
+body {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0f4ff 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  color: #22223b;
+  transition: background 0.4s;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === App Container === */
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 2rem 1rem;
+  background: transparent;
+}
+
+/* === Header === */
+.App-header {
+  background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+  color: #fff;
+  padding: 2rem 1rem 1.5rem 1rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px 0 rgba(99, 102, 241, 0.15);
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 100vw;
+  text-align: center;
+}
+
+.App-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+  color: #fbbf24;
+  text-shadow: 1px 2px 8px rgba(99,102,241,0.12);
+}
+
+.App-subtitle {
+  font-size: 1.2rem;
+  color: #e0e7ff;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* === Chat Area === */
+.chat-area {
+  width: 100%;
+  max-width: 100vw;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+/* === Message List === */
+.message-list {
+  background: rgba(255,255,255,0.95);
+  border-radius: 1.25rem;
+  box-shadow: 0 2px 16px 0 rgba(99, 102, 241, 0.08);
+  padding: 1.5rem;
+  min-height: 350px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 1.5rem;
+  transition: background 0.3s;
+  width: 100%;
+}
+
+/* === Input Section === */
+.input-section {
+  background: rgba(255,255,255,0.85);
+  border-radius: 1.25rem;
+  box-shadow: 0 2px 16px 0 rgba(99, 102, 241, 0.08);
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  transition: background 0.3s;
+  width: 100%;
+}
+
+/* === Buttons === */
+.button-primary {
+  background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.10);
+  transition: background 0.2s, transform 0.1s;
+  cursor: pointer;
+}
+
+.button-primary:hover, .button-primary:focus {
+  background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%);
+  transform: scale(1.03);
+}
+
+.button-secondary {
+  background: #e0e7ff;
+  color: #4338ca;
+  font-weight: 600;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 2rem;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+
+.button-secondary:hover, .button-secondary:focus {
+  background: #c7d2fe;
+  color: #3730a3;
+}
+
+/* === Avatars and Message Bubbles === */
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: #e0e7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.75rem;
+}
+
+.message-bubble {
+  border-radius: 1.25rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 1px 6px 0 rgba(99, 102, 241, 0.06);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 80%;
+  word-break: break-word;
+}
+
+.message-bubble.user {
+  background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%);
+  color: #fff;
+  margin-left: auto;
+}
+
+.message-bubble.ai {
+  background: #f1f5f9;
+  color: #22223b;
+  margin-right: auto;
+}
+
+.message-bubble.feedback {
+  background: #d1fae5;
+  color: #065f46;
+  border: 1px solid #6ee7b7;
+}
+
+.message-bubble.question {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+
+.message-bubble.answer {
+  background: #fef9c3;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+
+/* === Responsive === */
+@media (max-width: 700px) {
+  .App-header,
+  .chat-area,
+  .message-list,
+  .input-section {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .App-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .App-header,
+  .chat-area,
+  .message-list,
+  .input-section {
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+  }
+  .App-title {
+    font-size: 1.1rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .App-header,
+  .chat-area,
+  .message-list,
+  .input-section {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* === Animations === */
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.App-header,
+.chat-area,
+.message-list,
+.input-section {
+  max-width: 100vw;
+  width: 100%;
+  box-sizing: border-box;
+}
